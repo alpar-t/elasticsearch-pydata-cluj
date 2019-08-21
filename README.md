@@ -1,27 +1,48 @@
 Required tools 
 ==============
 
-Start SQL with:
+Start with:
 ```
-docker-compose -f sql.yml up -d
+sudo sysctl -w vm.max_map_count=262144
+docker-compose up -d
 ```
 Connect to http://localhost:8080/  
 `u:sql`, `p:changeme`, `db:sql`
 
 
-Start the elastic stack with:
+And connect to http://localhost:5601/
 
+Introduction
+============
 ```
-docker-compose -f stack.yml up -d
-```
-Connect to http://localhost:5601/
+DELETE me
+POST me/_doc
+{
+  "name": "Alpar Torok",
+  "jobs" : [
+    { "at" : "Elastic", "role" : "Software Enginer", "since" : "2018" },
+    { "at" : "Freelancer", "role" : "Consulting Architect", "since" : "2016" },
+    { "at" : "gTeam/crossover", "role" : "Chief Software Architect", "since" : "2014" },
+    { "at" : "HP", "role" : "Functional Architect", "since" : "2014" },
+    { "at" : "HP", "role" : "Software Enginer", "since" : "2010" },
+    { "at" : "Bitdefender", "role" : "Automation Enginer", "since" : "2008" },
+    { "at" : "Freelancer", "role" : "Web developer", "since" : "2006" }
+  ],
+  "passions" : [ "family", "job", "photography" ],
+  "email" : "torokalpar@gmail.com",
+  "linkedin": "https://www.linkedin.com/in/torokalpar/",
+  "github": "https://github.com/atorok/elasticsearch-pydata-cluj"
+}
 
+GET me/_search
+```
 
 Demo
 ====
 
 Insert  some data: 
 ```
+DROP TABLE IF EXISTS users;
 CREATE TABLE users
 (
    name VARCHAR(100),
@@ -107,26 +128,16 @@ WHERE name LIKE '%_lpar%' OR
 With Elasticsearch
 ==================
 
-```
-DELETE me
-POST me/_doc
-{
-  "name": "Alpar Torok",
-  "jobs" : [
-    { "at" : "Elastic", "role" : "Software Enginer", "since" : "2018" },
-    { "at" : "Freelancer", "role" : "Consulting Architect", "since" : "2016" },
-    { "at" : "gTeam/crossover", "role" : "Chief Software Architect", "since" : "2014" },
-    { "at" : "HP", "role" : "Functional Architect", "since" : "2014" },
-    { "at" : "HP", "role" : "Software Enginer", "since" : "2010" },
-    { "at" : "Bitdefender", "role" : "Automation Enginer", "since" : "2008" },
-    { "at" : "Freelancer", "role" : "Web developer", "since" : "2006" }
-  ],
-  "passions" : [ "family", "job", "photography" ],
-  "email" : "torokalpar@gmail.com",
-  "linkedind": "https://www.linkedin.com/in/torokalpar/"
-}
 
-GET me/_search
+Start inserting some data:
+```
+wget http://download.elastic.co/workshops/basic-kibana/injector/injector-7.0.jar
+time java -jar injector-7.0.jar -nb 10000000
+```
+Check on this lather;
+
+
+```
 
 ### REINIT
 DELETE user
@@ -152,7 +163,8 @@ PUT user
           "analyzer": "my-asciifolding"
         },
         "comments": {
-          "type": "text"
+          "type": "text",
+          "analyzer": "my-asciifolding"
         }
       }
   }
@@ -232,11 +244,7 @@ GET user/_search
 ```
 
 
-```
-wget http://download.elastic.co/workshops/basic-kibana/injector/injector-7.0.jar
-time java -jar injector-7.0.jar
-```
-
+Look at an aggregation:
 
 ```
 GET person/_search?track_total_hits=true
@@ -275,3 +283,5 @@ GET person/_search?track_total_hits=true
 Import export-bbl-7.2.ndjson to Kibana.
 
 Explore the dasboard.
+
+Remove a node and observe the shards.
