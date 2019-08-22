@@ -75,19 +75,13 @@ SELECT * FROM users WHERE name LIKE '%Alpar%';
 
 User searches by full name:
 ```
+SELECT * FROM users WHERE name LIKE '%Torok Alpar%';
+SELECT * FROM users WHERE name LIKE '%Torok%Alpar%';
 SELECT * FROM users WHERE name LIKE '%Alpar Torok%';
 ```
 
-But what if:
-```
-SELECT * FROM users WHERE name LIKE '%Torok Alpar%';
-SELECT * FROM users WHERE name LIKE '%Torok%Alpar%';
-```
-(no result)
-
 
 How do we fix that?:
-        
 ```
 SELECT * FROM users
 WHERE name LIKE '%alpar%' AND
@@ -101,21 +95,10 @@ WHERE name LIKE '%Alpar%' AND
       name LIKE '%Torok%';
 ```
 
-Search the entire db:
-```
-SELECT * FROM users 
-WHERE name LIKE '%Alpar%' OR
-      comments LIKE '%Alpar%';
-```
-Missing results, incorrect order
-
-
 Search with a typo: 
 ```
 SELECT * FROM users WHERE name LIKE '%Albar%';
-```
 
-```
 SELECT * FROM users 
 WHERE name LIKE '%_lpar%' OR
       name LIKE '%A_par%' OR
@@ -124,6 +107,15 @@ WHERE name LIKE '%_lpar%' OR
       name LIKE '%Alpa_%' 
 ;
 ```
+
+Search the entire db:
+```
+SELECT * FROM users 
+WHERE name LIKE '%Alpar%' OR
+      comments LIKE '%Alpar%';
+```
+Missing results, incorrect order
+
 
 With Elasticsearch
 ==================
@@ -282,6 +274,6 @@ GET person/_search?track_total_hits=true
 
 Import export-bbl-7.2.ndjson to Kibana.
 
-Explore the dasboard.
+Explore the dashboard.
 
 Remove a node and observe the shards.
